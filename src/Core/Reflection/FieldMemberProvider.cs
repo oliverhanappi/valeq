@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace Valueq.Reflection
+namespace Valeq.Reflection
 {
     public class FieldMemberProvider : IMemberProvider
     {

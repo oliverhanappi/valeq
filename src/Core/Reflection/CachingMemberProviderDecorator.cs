@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Valueq.Reflection
+namespace Valeq.Reflection
 {
     public class CachingMemberProviderDecorator : IMemberProvider
     {

@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
 
-namespace Valueq.Reflection
+namespace Valeq.Reflection
 {
     public class Member
     {

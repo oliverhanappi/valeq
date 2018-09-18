@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Linq;
 
-namespace Valueq.Reflection
+namespace Valeq.Reflection
 {
     public static class TypeCategoryExtensions
     {

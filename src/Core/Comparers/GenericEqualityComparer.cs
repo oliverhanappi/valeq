@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Valueq.Comparers
+namespace Valeq.Comparers
 {
     public abstract class GenericEqualityComparer<T> : IEqualityComparer<T>, IEqualityComparer
     {

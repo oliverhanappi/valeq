@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using NUnit.Framework;
-using Valueq.Reflection;
+using Valeq.Reflection;
 
 namespace Tests.Reflection
 {

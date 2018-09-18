@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace Valueq.Comparers
+namespace Valeq.Comparers
 {
     public static class DefaultEqualityComparer
     {

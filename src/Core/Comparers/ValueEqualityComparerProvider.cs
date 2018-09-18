@@ -2,9 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Linq;
-using Valueq.Reflection;
+using Valeq.Reflection;
 
-namespace Valueq.Comparers
+namespace Valeq.Comparers
 {
     public class ValueEqualityComparerProvider : IValueEqualityComparerProvider
     {

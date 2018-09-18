@@ -1,8 +1,8 @@
 using System;
-using Valueq.Comparers;
-using Valueq.Reflection;
+using Valeq.Comparers;
+using Valeq.Reflection;
 
-namespace Valueq.Configuration
+namespace Valeq.Configuration
 {
     public class ValueEqualityConfiguration
     {

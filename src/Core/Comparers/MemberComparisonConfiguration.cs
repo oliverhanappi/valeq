@@ -1,8 +1,8 @@
 using System;
 using System.Collections;
-using Valueq.Reflection;
+using Valeq.Reflection;
 
-namespace Valueq.Comparers
+namespace Valeq.Comparers
 {
     public class MemberComparisonConfiguration
     {

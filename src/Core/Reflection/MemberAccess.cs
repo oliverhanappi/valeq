@@ -2,7 +2,7 @@ using System;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace Valueq.Reflection
+namespace Valeq.Reflection
 {
     public static class MemberAccess
     {

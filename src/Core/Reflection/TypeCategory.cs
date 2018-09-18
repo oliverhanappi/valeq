@@ -1,4 +1,4 @@
-namespace Valueq.Reflection
+namespace Valeq.Reflection
 {
     public enum TypeCategory
     {

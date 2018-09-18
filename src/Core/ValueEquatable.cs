@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections;
-using Valueq.Configuration;
+using Valeq.Configuration;
 
-namespace Valueq
+namespace Valeq
 {
     public abstract class ValueEquatable
     {
