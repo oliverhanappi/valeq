@@ -1,6 +1,8 @@
 using System;
 using Valeq.Comparers;
+using Valeq.Metadata;
 using Valeq.Reflection;
+using Valeq.Runtime;
 
 namespace Valeq.Configuration
 {
@@ -30,7 +32,7 @@ namespace Valeq.Configuration
                 _currentSetter.Invoke(value);
             }
         }
-
+        
         public static ValueEqualityConfiguration CreateDefaultConfiguration()
         {
             return new ValueEqualityConfigurationBuilder().Build();
@@ -46,11 +48,14 @@ namespace Valeq.Configuration
         }
         
         public IMemberProvider MemberProvider { get; }
+        public IMetadataProvider MetadataProvider { get; }
         public IValueEqualityComparerProvider ValueEqualityComparerProvider { get; }
 
-        public ValueEqualityConfiguration(IMemberProvider memberProvider, IValueEqualityComparerProvider valueEqualityComparerProvider)
+        public ValueEqualityConfiguration(IMemberProvider memberProvider, IMetadataProvider metadataProvider,
+            IValueEqualityComparerProvider valueEqualityComparerProvider)
         {
             MemberProvider = memberProvider ?? throw new ArgumentNullException(nameof(memberProvider));
+            MetadataProvider = metadataProvider ?? throw new ArgumentNullException(nameof(metadataProvider));
             ValueEqualityComparerProvider = valueEqualityComparerProvider ?? throw new ArgumentNullException(nameof(valueEqualityComparerProvider));
         }
     }

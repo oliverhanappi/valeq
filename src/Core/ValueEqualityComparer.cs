@@ -1,11 +1,20 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using Valeq.Configuration;
 
 namespace Valeq
 {
     public class ValueEqualityComparer : IEqualityComparer
     {
+        public static IEqualityComparer<T> GetFor<T>(ValueEqualityConfiguration configuration = null)
+        {
+            configuration = configuration ?? ValueEqualityConfiguration.Current;
+            
+            var equalityComparer = configuration.ValueEqualityComparerProvider.GetEqualityComparer(typeof(T));
+            return (IEqualityComparer<T>) equalityComparer;
+        }
+        
         public ValueEqualityConfiguration Configuration { get; }
 
         public ValueEqualityComparer()

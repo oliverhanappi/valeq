@@ -3,9 +3,8 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using NUnit.Framework;
-using Valeq.Reflection;
 
-namespace Tests.Reflection
+namespace Valeq.Reflection
 {
     [TestFixture]
     public class TypeCategoryExtensionsTests

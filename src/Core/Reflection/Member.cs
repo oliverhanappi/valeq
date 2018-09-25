@@ -13,15 +13,23 @@ namespace Valeq.Reflection
             return new Member(fieldInfo, fieldInfo.FieldType, fieldGetter);
         }
 
-        private readonly MemberInfo _memberInfo;
+        public static Member FromPropertyInfo(PropertyInfo propertyInfo)
+        {
+            if (propertyInfo == null) throw new ArgumentNullException(nameof(propertyInfo));
+
+            var propertyGetter = MemberAccess.CreatePropertyGetter(propertyInfo);
+            return new Member(propertyInfo, propertyInfo.PropertyType, propertyGetter);
+        }
+
         private readonly Func<object, object> _getter;
 
+        public MemberInfo MemberInfo { get; }
         public string Name { get; }
         public Type MemberType { get; }
 
         private Member(MemberInfo memberInfo, Type memberType, Func<object, object> getter)
         {
-            _memberInfo = memberInfo ?? throw new ArgumentNullException(nameof(memberInfo));
+            MemberInfo = memberInfo ?? throw new ArgumentNullException(nameof(memberInfo));
             _getter = getter ?? throw new ArgumentNullException(nameof(getter));
 
             Name = memberInfo.GetDisplayName();
@@ -33,7 +41,7 @@ namespace Valeq.Reflection
             if (type == null)
                 throw new ArgumentNullException(nameof(type));
 
-            if (_memberInfo.DeclaringType == type)
+            if (MemberInfo.DeclaringType == type)
                 return true;
 
             if (type.BaseType == null)
@@ -52,7 +60,26 @@ namespace Valeq.Reflection
 
         public override string ToString()
         {
-            return $"Member {Name}";
+            var type = MemberInfo is FieldInfo ? "Field" : "Property";
+            return $"{type} {Name}:{MemberType.GetDisplayName()} of {MemberInfo.DeclaringType.GetDisplayName()}";
+        }
+
+        protected bool Equals(Member other)
+        {
+            return MemberInfo.Equals(other.MemberInfo);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != GetType()) return false;
+            return Equals((Member) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return MemberInfo.GetHashCode();
         }
     }
 }

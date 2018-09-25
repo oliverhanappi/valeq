@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 
-namespace Valeq.Comparers
+namespace Valeq.Runtime
 {
     public interface IValueEqualityComparerProvider
     {
