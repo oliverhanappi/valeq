@@ -1,11 +1,9 @@
 using System;
 using System.Collections;
 using Valeq.Comparers;
-using Valeq.Metadata;
-using Valeq.Reflection;
 using Valeq.Runtime;
 
-namespace Valeq.Configuration
+namespace Valeq.Metadata
 {
     [AttributeUsage(ValeqAttributeTargets.Member)]
     public class StringComparisonAttribute : Attribute, IEqualityComparerMetadata

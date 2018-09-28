@@ -1,34 +1,51 @@
-using Valeq.Comparers;
+using System.Reflection;
 using Valeq.Metadata;
 using Valeq.Reflection;
-using Valeq.Runtime;
 
 namespace Valeq.Configuration
 {
     public class ValueEqualityConfigurationBuilder
     {
+        public ICustomMetadataBuilder Compare { get; }
+
+        public StringComparisonCulture DefaultStringComparisonCulture { get; set; }
+
+        public ValueEqualityConfigurationBuilder()
+        {
+            DefaultStringComparisonCulture = StringComparisonCulture.None;
+            Compare = new CustomMetadataBuilder();
+        }
+
         public ValueEqualityConfiguration Build()
         {
+            ApplyDefaultMetadata();
+
             var metadataProvider = BuildMetadataProvider();
             var memberProvider = BuildMemberProvider();
-            var valueEqualityComparerProvider = BuildValueEqualityComparerProvider();
 
-            return new ValueEqualityConfiguration(memberProvider, metadataProvider, valueEqualityComparerProvider);
+            return new ValueEqualityConfiguration(memberProvider, metadataProvider, DefaultStringComparisonCulture);
 
             IMetadataProvider BuildMetadataProvider()
             {
-                return new CachingMetadataProviderDecorator(new AttributeMetadataProvider());
+                var attributeMetadataProvider = new AttributeMetadataProvider();
+                var customMetadataProvider = Compare.BuildMetadataProvider();
+
+                var aggregateMetadataProvider =
+                    new AggregateMetadataProvider(attributeMetadataProvider, customMetadataProvider);
+                
+                return new CachingMetadataProviderDecorator(aggregateMetadataProvider);
             }
 
             IMemberProvider BuildMemberProvider()
             {
                 return new CachingMemberProviderDecorator(new MetadataBasedMemberProvider(metadataProvider));
             }
+        }
 
-            IValueEqualityComparerProvider BuildValueEqualityComparerProvider()
-            {
-                return new ValueEqualityComparerProvider(memberProvider, metadataProvider);
-            }
+        private void ApplyDefaultMetadata()
+        {
+            var stringComparison = DefaultStringComparisonCulture.ToStringComparison(ignoreCase: false);
+            Compare.Type<string>().AddTypeMetadataIfNotExists(new StringComparisonAttribute(stringComparison));
         }
     }
 }

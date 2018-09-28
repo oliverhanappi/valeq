@@ -1,6 +1,6 @@
 using System;
 
-namespace Valeq.Configuration
+namespace Valeq.Metadata
 {
     public static class ValeqAttributeTargets
     {

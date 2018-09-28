@@ -3,33 +3,33 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Linq;
 using Valeq.Comparers;
+using Valeq.Configuration;
 using Valeq.Metadata;
 using Valeq.Reflection;
 
 namespace Valeq.Runtime
 {
-    public class ValueEqualityComparerProvider : IValueEqualityComparerProvider
+    public partial class ValueEqualityComparerProvider : IValueEqualityComparerProvider
     {
-        private readonly IMemberProvider _memberProvider;
-        private readonly IMetadataProvider _metadataProvider;
+        public ValueEqualityConfiguration Configuration { get; }
+
         private readonly ConcurrentDictionary<EqualityComparerScope, IEqualityComparer> _cachedEqualityComparers;
 
-        public ValueEqualityComparerProvider(IMemberProvider memberProvider, IMetadataProvider metadataProvider)
+        public ValueEqualityComparerProvider(ValueEqualityConfiguration configuration)
         {
-            _memberProvider = memberProvider ?? throw new ArgumentNullException(nameof(memberProvider));
-            _metadataProvider = metadataProvider ?? throw new ArgumentNullException(nameof(metadataProvider));
+            Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             _cachedEqualityComparers = new ConcurrentDictionary<EqualityComparerScope, IEqualityComparer>();
         }
 
         public IEqualityComparer GetEqualityComparer(Type type)
         {
             if (type == null) throw new ArgumentNullException(nameof(type));
-            
+
             var scope = EqualityComparerScope.ForType(type);
             return _cachedEqualityComparers.GetOrAdd(scope, s =>
             {
-                var metadata = _metadataProvider.GetTypeMetadata(s.TargetType);
-                var context = new EqualityComparerContext(s, metadata);
+                var metadata = Configuration.MetadataProvider.GetTypeMetadata(s.TargetType);
+                var context = new EqualityComparerContext(s, metadata, this, Configuration);
 
                 return CreateEqualityComparer(context);
             });
@@ -38,18 +38,18 @@ namespace Valeq.Runtime
         private IEqualityComparer GetEqualityComparer(Member member)
         {
             if (member == null) throw new ArgumentNullException(nameof(member));
-            
+
             var scope = EqualityComparerScope.ForMember(member);
             return _cachedEqualityComparers.GetOrAdd(scope, s =>
             {
-                var memberMetadata = _metadataProvider.GetMemberMetadata(member);
+                var memberMetadata = Configuration.MetadataProvider.GetMemberMetadata(member);
                 if (memberMetadata.IsEmpty)
                     return GetEqualityComparer(member.MemberType);
 
-                var typeMetadata = _metadataProvider.GetTypeMetadata(member.MemberType);
+                var typeMetadata = Configuration.MetadataProvider.GetTypeMetadata(member.MemberType);
                 var effectiveMetadata = typeMetadata.OverrideWith(memberMetadata);
 
-                var context = new EqualityComparerContext(s, effectiveMetadata);
+                var context = new EqualityComparerContext(s, effectiveMetadata, this, Configuration);
                 return CreateEqualityComparer(context);
             });
         }
@@ -74,7 +74,8 @@ namespace Valeq.Runtime
                         return CreateEqualityComparerForCollection(context);
 
                     default:
-                        var message = $"Unknown category {typeCategory} of type {context.Scope.TargetType.GetDisplayName()}.";
+                        var message =
+                            $"Unknown category {typeCategory} of type {context.Scope.TargetType.GetDisplayName()}.";
                         throw new ArgumentException(message, nameof(context));
                 }
             }
@@ -87,7 +88,7 @@ namespace Valeq.Runtime
 
         protected virtual IEqualityComparer CreateEqualityComparerForComplexType(EqualityComparerContext context)
         {
-            var members = _memberProvider.GetMembers(context.Scope.TargetType).Where(IsMemberIncluded);
+            var members = Configuration.MemberProvider.GetMembers(context.Scope.TargetType).Where(IsMemberIncluded);
             var memberComparisonConfigurations = members.Select(CreateMemberComparisonConfiguration);
 
             return MemberEqualityComparer.Create(context.Scope.TargetType, memberComparisonConfigurations);
@@ -103,7 +104,7 @@ namespace Valeq.Runtime
 
         protected virtual bool IsMemberIncluded(Member member)
         {
-            var metadata = _metadataProvider.GetMemberMetadata(member);
+            var metadata = Configuration.MetadataProvider.GetMemberMetadata(member);
             return !metadata.HasMetadata<IIgnoredMemberMetadata>();
         }
 
@@ -114,7 +115,7 @@ namespace Valeq.Runtime
 
             var category = context.Metadata.TryGetMetadata<ICollectionCategoryMetadata>()
                 .Match(m => m.GetCollectionCategory(context), context.Scope.TargetType.GetCollectionCategory);
-            
+
             switch (category)
             {
                 case CollectionCategory.Sequence:
@@ -127,12 +128,14 @@ namespace Valeq.Runtime
                     return BagEqualityComparer.Create(elementType, elementEqualityComparer);
 
                 default:
-                    var message = $"Unknown category {category} of collection {context.Scope.TargetType.GetDisplayName()}";
+                    var message =
+                        $"Unknown category {category} of collection {context.Scope.TargetType.GetDisplayName()}";
                     throw new ArgumentException(message, nameof(category));
             }
         }
 
-        protected virtual IEqualityComparer GetElementEqualityComparer(EqualityComparerContext context, Type elementType)
+        protected virtual IEqualityComparer GetElementEqualityComparer(EqualityComparerContext context,
+            Type elementType)
         {
             return context.Metadata.TryGetMetadata<IElementEqualityComparerMetadata>()
                 .Match(m => m.GetElementEqualityComparer(context), () => GetEqualityComparer(elementType));

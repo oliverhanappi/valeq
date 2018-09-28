@@ -1,9 +1,8 @@
 using System;
-using Valeq.Metadata;
 using Valeq.Reflection;
 using Valeq.Runtime;
 
-namespace Valeq.Configuration
+namespace Valeq.Metadata
 {
     [AttributeUsage(ValeqAttributeTargets.TypeOrMember)]
     public class SetAttribute : Attribute, ICollectionCategoryMetadata

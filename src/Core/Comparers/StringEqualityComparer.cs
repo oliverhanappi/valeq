@@ -1,33 +1,39 @@
 using System;
+using System.Collections.Generic;
 
 namespace Valeq.Comparers
 {
     public static class StringEqualityComparer
     {
-        public static StringComparer Get(StringComparison stringComparison)
+        public static IGenericEqualityComparer<string> Get(StringComparison stringComparison)
         {
-            switch (stringComparison)
+            return new NullSafeEqualityComparerWrapper<string>(Get());
+            
+            StringComparer Get()
             {
-                case StringComparison.Ordinal:
-                    return StringComparer.Ordinal;
+                switch (stringComparison)
+                {
+                    case StringComparison.Ordinal:
+                        return StringComparer.Ordinal;
 
-                case StringComparison.CurrentCulture:
-                    return StringComparer.CurrentCulture;
+                    case StringComparison.CurrentCulture:
+                        return StringComparer.CurrentCulture;
 
-                case StringComparison.InvariantCulture:
-                    return StringComparer.InvariantCulture;
+                    case StringComparison.InvariantCulture:
+                        return StringComparer.InvariantCulture;
 
-                case StringComparison.OrdinalIgnoreCase:
-                    return StringComparer.OrdinalIgnoreCase;
+                    case StringComparison.OrdinalIgnoreCase:
+                        return StringComparer.OrdinalIgnoreCase;
 
-                case StringComparison.CurrentCultureIgnoreCase:
-                    return StringComparer.CurrentCultureIgnoreCase;
+                    case StringComparison.CurrentCultureIgnoreCase:
+                        return StringComparer.CurrentCultureIgnoreCase;
 
-                case StringComparison.InvariantCultureIgnoreCase:
-                    return StringComparer.InvariantCultureIgnoreCase;
+                    case StringComparison.InvariantCultureIgnoreCase:
+                        return StringComparer.InvariantCultureIgnoreCase;
 
-                default:
-                    throw new ArgumentException($"Unknown string comparison: {stringComparison}");
+                    default:
+                        throw new ArgumentException($"Unknown string comparison: {stringComparison}");
+                }
             }
         }
     }

@@ -36,8 +36,6 @@ namespace Valeq.Utils
             return result;
         }
 
-        //TODO public T IfNone(Func<T> fallback) => Match(x => x, fallback);
-
         public bool Equals(OptionalValue<T> other)
         {
             return EqualityComparer<T>.Default.Equals(_value, other._value);

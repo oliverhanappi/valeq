@@ -2,6 +2,7 @@ using System;
 using NUnit.Framework;
 using Valeq.Comparers;
 using Valeq.Configuration;
+using Valeq.Metadata;
 
 namespace Valeq.IntegrationTests
 {

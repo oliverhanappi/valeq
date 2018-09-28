@@ -15,5 +15,12 @@ namespace Valeq.Comparers
 
             Assert.That(equalityComparer1, Is.SameAs(equalityComparer2));
         }
+        
+        [Test]
+        public void GetForType_DoesNotFailHashcodeCalculationOnNull()
+        {
+            var equalityComparer = DefaultEqualityComparer.GetForType(typeof(string));
+            Assert.That(() => equalityComparer.GetHashCode(null), Throws.Nothing);
+        }
     }
 }

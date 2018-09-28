@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Valeq.Configuration;
 using Valeq.Metadata;
 
 namespace Valeq.Reflection
@@ -35,8 +34,8 @@ namespace Valeq.Reflection
             if (fieldMembersWithMetadata.Count > 0 && propertyMembersWithMetadata.Count > 0)
             {
                 var message = new StringBuilder();
-                message.AppendLine("Unable to choose between comparing fields or properties " +
-                                   "because metadata was found on both types of members.");
+                message.AppendLine($"Unable to choose between comparing fields or properties for " +
+                                   $"{type.GetDisplayName()} because metadata was found on both types of members.");
 
                 message.AppendLine();
                 message.AppendLine("Fields with metadata:");
@@ -48,7 +47,7 @@ namespace Valeq.Reflection
                 foreach (var propertyMember in propertyMembersWithMetadata)
                     message.AppendLine($"  - {propertyMember}");
 
-                throw new ConfigurationException(message.ToString().Trim());
+                throw new ArgumentException(message.ToString().Trim(), nameof(type));
             }
 
             return propertyMembersWithMetadata.Count > 0 ? propertyMembers : fieldMembers;

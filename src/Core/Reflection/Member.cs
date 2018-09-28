@@ -5,6 +5,9 @@ namespace Valeq.Reflection
 {
     public class Member
     {
+        public static bool operator ==(Member x, Member y) => Equals(x, y);
+        public static bool operator !=(Member x, Member y) => !Equals(x, y);
+        
         public static Member FromFieldInfo(FieldInfo fieldInfo)
         {
             if (fieldInfo == null) throw new ArgumentNullException(nameof(fieldInfo));
@@ -61,7 +64,7 @@ namespace Valeq.Reflection
         public override string ToString()
         {
             var type = MemberInfo is FieldInfo ? "Field" : "Property";
-            return $"{type} {Name}:{MemberType.GetDisplayName()} of {MemberInfo.DeclaringType.GetDisplayName()}";
+            return $"{type} {Name}:{MemberType.GetDisplayName()}";
         }
 
         protected bool Equals(Member other)

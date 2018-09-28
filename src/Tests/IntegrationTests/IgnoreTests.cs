@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using Valeq.Configuration;
+using Valeq.Metadata;
 
 namespace Valeq.IntegrationTests
 {

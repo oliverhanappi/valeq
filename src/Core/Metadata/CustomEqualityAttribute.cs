@@ -1,10 +1,9 @@
 using System;
 using System.Collections;
 using Valeq.Comparers;
-using Valeq.Metadata;
 using Valeq.Runtime;
 
-namespace Valeq.Configuration
+namespace Valeq.Metadata
 {
     /// <summary>
     /// The type's own Equals and GetHashCode implementations should be used for determining value equality. 

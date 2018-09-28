@@ -1,10 +1,9 @@
 using System;
 using System.Collections;
-using Valeq.Metadata;
 using Valeq.Reflection;
 using Valeq.Runtime;
 
-namespace Valeq.Configuration
+namespace Valeq.Metadata
 {
     [AttributeUsage(ValeqAttributeTargets.TypeOrMember)]
     public class EqualityComparerAttribute : Attribute, IEqualityComparerMetadata

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections;
-using Valeq.Configuration;
+using Valeq.Runtime;
 
 namespace Valeq
 {
@@ -18,7 +18,7 @@ namespace Valeq
 
         protected virtual IEqualityComparer GetEqualityComparer()
         {
-            return ValueEqualityConfiguration.Current.ValueEqualityComparerProvider.GetEqualityComparer(GetType());
+            return ValueEqualityComparerProvider.Current.GetEqualityComparer(GetType());
         }
 
         public override bool Equals(object obj)

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Valeq.Comparers
 {
-    public abstract class GenericEqualityComparer<T> : IEqualityComparer<T>, IEqualityComparer
+    public abstract class GenericEqualityComparer<T> : IGenericEqualityComparer<T>
     {
         public bool Equals(T x, T y)
         {

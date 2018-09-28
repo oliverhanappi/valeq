@@ -21,6 +21,12 @@ namespace Valeq.Metadata
         public static MetadataCollection Merge(params MetadataCollection[] metadatas)
         {
             if (metadatas == null) throw new ArgumentNullException(nameof(metadatas));
+            return Merge(metadatas.AsEnumerable());
+        }
+
+        public static MetadataCollection Merge(IEnumerable<MetadataCollection> metadatas)
+        {
+            if (metadatas == null) throw new ArgumentNullException(nameof(metadatas));
 
             var metadata = metadatas.SelectMany(m => m._metadata.Values)
                 .Distinct(new ReferenceEqualityComparer<IMetadata>());
@@ -39,7 +45,7 @@ namespace Valeq.Metadata
             if (duplicateMetadatas.Count > 0)
             {
                 var message = new StringBuilder();
-                message.AppendLine($"The following metadata types are provided multiple times:");
+                message.AppendLine("The following metadata types are provided multiple times:");
                 foreach (var duplicateMetadata in duplicateMetadatas)
                 {
                     message.AppendLine($"  - {duplicateMetadata.Key.GetDisplayName()}");
@@ -92,8 +98,5 @@ namespace Valeq.Metadata
 
             return new MetadataCollection(overriddenMetadata);
         }
-
-        //public IEnumerator<IMetadata> GetEnumerator() => _metadata.GetEnumerator();
-        //IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }
