@@ -16,7 +16,7 @@ namespace Valeq.Comparers
         }
         
         [Test]
-        public void GetHashcode_Null_DoesNotFail()
+        public void GetHashCode_Null_DoesNotFail()
         {
             var stringComparer = StringEqualityComparer.Get(StringComparison.Ordinal);
             Assert.That(() => stringComparer.GetHashCode(null), Throws.Nothing);

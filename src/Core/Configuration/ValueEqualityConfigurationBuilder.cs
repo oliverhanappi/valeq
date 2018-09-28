@@ -1,4 +1,3 @@
-using System.Reflection;
 using Valeq.Metadata;
 using Valeq.Reflection;
 
@@ -8,10 +7,12 @@ namespace Valeq.Configuration
     {
         public ICustomMetadataBuilder Compare { get; }
 
+        public EqualityComparisonType DefaultEqualityComparisonType { get; set; }
         public StringComparisonCulture DefaultStringComparisonCulture { get; set; }
 
         public ValueEqualityConfigurationBuilder()
         {
+            DefaultEqualityComparisonType = EqualityComparisonType.ValueEquality;
             DefaultStringComparisonCulture = StringComparisonCulture.None;
             Compare = new CustomMetadataBuilder();
         }
@@ -23,7 +24,8 @@ namespace Valeq.Configuration
             var metadataProvider = BuildMetadataProvider();
             var memberProvider = BuildMemberProvider();
 
-            return new ValueEqualityConfiguration(memberProvider, metadataProvider, DefaultStringComparisonCulture);
+            return new ValueEqualityConfiguration(memberProvider, metadataProvider,
+                DefaultEqualityComparisonType, DefaultStringComparisonCulture);
 
             IMetadataProvider BuildMetadataProvider()
             {
@@ -32,7 +34,7 @@ namespace Valeq.Configuration
 
                 var aggregateMetadataProvider =
                     new AggregateMetadataProvider(attributeMetadataProvider, customMetadataProvider);
-                
+
                 return new CachingMetadataProviderDecorator(aggregateMetadataProvider);
             }
 

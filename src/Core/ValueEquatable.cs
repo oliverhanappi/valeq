@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections;
+using Valeq.Metadata;
 using Valeq.Runtime;
 
 namespace Valeq
 {
+    [ValueEquality]
     public abstract class ValueEquatable
     {
         public static bool operator ==(ValueEquatable x, ValueEquatable y) => Equals(x, y);

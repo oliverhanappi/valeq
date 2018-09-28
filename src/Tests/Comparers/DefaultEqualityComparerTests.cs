@@ -17,7 +17,7 @@ namespace Valeq.Comparers
         }
         
         [Test]
-        public void GetForType_DoesNotFailHashcodeCalculationOnNull()
+        public void GetForType_DoesNotFailHashCodeCalculationOnNull()
         {
             var equalityComparer = DefaultEqualityComparer.GetForType(typeof(string));
             Assert.That(() => equalityComparer.GetHashCode(null), Throws.Nothing);

@@ -61,32 +61,55 @@ namespace Valeq.Runtime
 
             IEqualityComparer Create()
             {
-                var typeCategory = context.Scope.TargetType.GetCategory();
-                switch (typeCategory)
+                var equalityComparisonType = context.Metadata.TryGetMetadata<IEqualityComparisonTypeMetadata>()
+                    .Match(m => m.EqualityComparisonType, () => Configuration.DefaultEqualityComparisonType);
+
+                switch (equalityComparisonType)
                 {
-                    case TypeCategory.Simple:
-                        return CreateEqualityComparerForSimpleType(context);
+                    case EqualityComparisonType.DefaultEquality:
+                        return CreateDefaultEqualityComparer(context);
 
-                    case TypeCategory.Complex:
-                        return CreateEqualityComparerForComplexType(context);
-
-                    case TypeCategory.Collection:
-                        return CreateEqualityComparerForCollection(context);
+                    case EqualityComparisonType.ValueEquality:
+                        return CreateValueEqualityComparer(context);
 
                     default:
-                        var message =
-                            $"Unknown category {typeCategory} of type {context.Scope.TargetType.GetDisplayName()}.";
-                        throw new ArgumentException(message, nameof(context));
+                        throw new ArgumentException($"Unknown equality comparison type: {equalityComparisonType}");
                 }
             }
         }
 
-        protected virtual IEqualityComparer CreateEqualityComparerForSimpleType(EqualityComparerContext context)
+        private IEqualityComparer CreateDefaultEqualityComparer(EqualityComparerContext context)
         {
             return DefaultEqualityComparer.GetForType(context.Scope.TargetType);
         }
 
-        protected virtual IEqualityComparer CreateEqualityComparerForComplexType(EqualityComparerContext context)
+        private IEqualityComparer CreateValueEqualityComparer(EqualityComparerContext context)
+        {
+            var typeCategory = context.Scope.TargetType.GetCategory();
+            switch (typeCategory)
+            {
+                case TypeCategory.Simple:
+                    return CreateValueEqualityComparerForSimpleType(context);
+
+                case TypeCategory.Complex:
+                    return CreateValueEqualityComparerForComplexType(context);
+
+                case TypeCategory.Collection:
+                    return CreateValueEqualityComparerForCollection(context);
+
+                default:
+                    var message =
+                        $"Unknown category {typeCategory} of type {context.Scope.TargetType.GetDisplayName()}.";
+                    throw new ArgumentException(message, nameof(context));
+            }
+        }
+
+        protected virtual IEqualityComparer CreateValueEqualityComparerForSimpleType(EqualityComparerContext context)
+        {
+            return CreateDefaultEqualityComparer(context);
+        }
+
+        protected virtual IEqualityComparer CreateValueEqualityComparerForComplexType(EqualityComparerContext context)
         {
             var members = Configuration.MemberProvider.GetMembers(context.Scope.TargetType).Where(IsMemberIncluded);
             var memberComparisonConfigurations = members.Select(CreateMemberComparisonConfiguration);
@@ -108,7 +131,7 @@ namespace Valeq.Runtime
             return !metadata.HasMetadata<IIgnoredMemberMetadata>();
         }
 
-        protected virtual IEqualityComparer CreateEqualityComparerForCollection(EqualityComparerContext context)
+        protected virtual IEqualityComparer CreateValueEqualityComparerForCollection(EqualityComparerContext context)
         {
             var elementType = context.Scope.TargetType.GetCollectionElementType();
             var elementEqualityComparer = GetElementEqualityComparer(context, elementType);
