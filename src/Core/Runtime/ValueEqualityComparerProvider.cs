@@ -54,6 +54,12 @@ namespace Valeq.Runtime
             });
         }
 
+        private IEqualityComparer GetEqualityComparer(EqualityComparerContext context)
+        {
+            if (context == null) throw new ArgumentNullException(nameof(context));
+            return _cachedEqualityComparers.GetOrAdd(context.Scope, s => CreateEqualityComparer(context));
+        }
+
         private IEqualityComparer CreateEqualityComparer(EqualityComparerContext context)
         {
             return context.Metadata.TryGetMetadata<IEqualityComparerMetadata>()
@@ -85,6 +91,13 @@ namespace Valeq.Runtime
 
         private IEqualityComparer CreateValueEqualityComparer(EqualityComparerContext context)
         {
+            var underlyingType = Nullable.GetUnderlyingType(context.Scope.TargetType);
+            if (underlyingType != null)
+            {
+                var underlyingContext = context.GetContextForUnderlyingTypeOfNullable();
+                return GetEqualityComparer(underlyingContext);
+            }
+            
             var typeCategory = context.Scope.TargetType.GetCategory();
             switch (typeCategory)
             {

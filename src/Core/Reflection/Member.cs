@@ -7,36 +7,44 @@ namespace Valeq.Reflection
     {
         public static bool operator ==(Member x, Member y) => Equals(x, y);
         public static bool operator !=(Member x, Member y) => !Equals(x, y);
-        
+
         public static Member FromFieldInfo(FieldInfo fieldInfo)
         {
             if (fieldInfo == null) throw new ArgumentNullException(nameof(fieldInfo));
 
-            var fieldGetter = MemberAccess.CreateFieldGetter(fieldInfo);
-            return new Member(fieldInfo, fieldInfo.FieldType, fieldGetter);
+            var name = $"Field {fieldInfo.GetDisplayName()}";
+            var getter = MemberAccess.CreateFieldGetter(fieldInfo);
+            return new Member(name, fieldInfo, fieldInfo.FieldType, getter, fieldInfo.IsPartOf);
         }
 
         public static Member FromPropertyInfo(PropertyInfo propertyInfo)
         {
             if (propertyInfo == null) throw new ArgumentNullException(nameof(propertyInfo));
 
-            var propertyGetter = MemberAccess.CreatePropertyGetter(propertyInfo);
-            return new Member(propertyInfo, propertyInfo.PropertyType, propertyGetter);
+            var name = $"Property {propertyInfo.GetDisplayName()}";
+            var getter = MemberAccess.CreatePropertyGetter(propertyInfo);
+            return new Member(name, propertyInfo, propertyInfo.PropertyType, getter, propertyInfo.IsPartOf);
         }
 
         private readonly Func<object, object> _getter;
+        private readonly Func<Type, bool> _isPartOf;
 
-        public MemberInfo MemberInfo { get; }
+        public object MemberSource { get; }
         public string Name { get; }
         public Type MemberType { get; }
 
-        private Member(MemberInfo memberInfo, Type memberType, Func<object, object> getter)
+        public Member(string name, object memberSource, Type memberType,
+            Func<object, object> getter, Func<Type, bool> isPartOf)
         {
-            MemberInfo = memberInfo ?? throw new ArgumentNullException(nameof(memberInfo));
-            _getter = getter ?? throw new ArgumentNullException(nameof(getter));
+            if (String.IsNullOrWhiteSpace(name))
+                throw new ArgumentNullException(nameof(name));
 
-            Name = memberInfo.GetDisplayName();
+            Name = name;
+            MemberSource = memberSource ?? throw new ArgumentNullException(nameof(memberSource));
             MemberType = memberType ?? throw new ArgumentNullException(nameof(memberType));
+
+            _getter = getter ?? throw new ArgumentNullException(nameof(getter));
+            _isPartOf = isPartOf ?? throw new ArgumentNullException(nameof(isPartOf));
         }
 
         public bool IsPartOf(Type type)
@@ -44,13 +52,7 @@ namespace Valeq.Reflection
             if (type == null)
                 throw new ArgumentNullException(nameof(type));
 
-            if (MemberInfo.DeclaringType == type)
-                return true;
-
-            if (type.BaseType == null)
-                return false;
-
-            return IsPartOf(type.BaseType);
+            return _isPartOf.Invoke(type);
         }
 
         public object GetValue(object instance)
@@ -58,18 +60,27 @@ namespace Valeq.Reflection
             if (instance == null)
                 throw new ArgumentNullException(nameof(instance));
 
-            return _getter.Invoke(instance);
+            if (!IsPartOf(instance.GetType()))
+                throw new ArgumentException($"{this} is not part of {instance.GetType().GetDisplayName()}");
+
+            try
+            {
+                return _getter.Invoke(instance);
+            }
+            catch (Exception ex)
+            {
+                throw new MemberRetrievalException(this, instance, ex);
+            }
         }
 
         public override string ToString()
         {
-            var type = MemberInfo is FieldInfo ? "Field" : "Property";
-            return $"{type} {Name}:{MemberType.GetDisplayName()}";
+            return $"{Name}:{MemberType.GetDisplayName()}";
         }
 
         protected bool Equals(Member other)
         {
-            return MemberInfo.Equals(other.MemberInfo);
+            return MemberSource.Equals(other.MemberSource);
         }
 
         public override bool Equals(object obj)
@@ -82,7 +93,7 @@ namespace Valeq.Reflection
 
         public override int GetHashCode()
         {
-            return MemberInfo.GetHashCode();
+            return MemberSource.GetHashCode();
         }
     }
 }

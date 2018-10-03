@@ -22,5 +22,11 @@ namespace Valeq.Runtime
                                             throw new ArgumentNullException(nameof(valueEqualityComparerProvider));
             Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
+
+        public EqualityComparerContext GetContextForUnderlyingTypeOfNullable()
+        {
+            return new EqualityComparerContext(Scope.GetScopeForUnderlyingTypeOfNullable(),
+                Metadata, ValueEqualityComparerProvider, Configuration);
+        }
     }
 }

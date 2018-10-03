@@ -10,6 +10,8 @@ namespace Valeq.Metadata
 {
     public class MetadataCollection
     {
+        public static MetadataCollection Empty => new MetadataCollection(new Dictionary<Type, IMetadata>(capacity: 0));
+        
         public static MetadataCollection ForMetadata(IEnumerable<IMetadata> metadata)
         {
             if (metadata == null) throw new ArgumentNullException(nameof(metadata));

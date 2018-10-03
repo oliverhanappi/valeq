@@ -8,6 +8,12 @@ namespace Valeq.Comparers
     public class DefaultEqualityComparerTests
     {
         [Test]
+        public void GetForType_Null_ThrowsException()
+        {
+            Assert.That(() => DefaultEqualityComparer.GetForType(null), Throws.ArgumentNullException);
+        }
+        
+        [Test]
         public void GetForType_ReturnsEqualityComparerOfThatType()
         {
             var equalityComparer1 = DefaultEqualityComparer.GetForType(typeof(DateTime));

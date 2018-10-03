@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using Valeq.Metadata;
+using Valeq.Reflection;
 using Valeq.Runtime;
 
 namespace Valeq
@@ -11,6 +12,7 @@ namespace Valeq
         public static bool operator ==(ValueEquatable x, ValueEquatable y) => Equals(x, y);
         public static bool operator !=(ValueEquatable x, ValueEquatable y) => !Equals(x, y);
 
+        [UndiscoverableMember]
         private readonly Lazy<IEqualityComparer> _equalityComparer;
 
         protected ValueEquatable()

@@ -20,6 +20,12 @@ namespace Valeq.IntegrationTests
         {
             public int Value { get; set; }
             public RecursivePoco Child { get; set; }
+            public RecursiveNullablePoco? NullableChild { get; set; }
+        }
+
+        private struct RecursiveNullablePoco
+        {
+            public RecursivePoco RecursivePoco { get; set; }
         }
     }
 }

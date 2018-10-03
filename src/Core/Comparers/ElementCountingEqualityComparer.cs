@@ -41,8 +41,8 @@ namespace Valeq.Comparers
 
                 foreach (var elementCount in CountElements(obj))
                 {
-                    hashCode = (hashCode * 397) ^ elementCount.Count;
-                    hashCode = (hashCode * 397) ^ _elementEqualityComparer.GetHashCode(elementCount.Element);
+                    hashCode = hashCode ^ elementCount.Count;
+                    hashCode = hashCode ^ _elementEqualityComparer.GetHashCode(elementCount.Element);
                 }
 
                 return hashCode;

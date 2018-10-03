@@ -20,8 +20,13 @@ namespace Valeq.Metadata
         {
             if (member == null) throw new ArgumentNullException(nameof(member));
 
-            var metadata = member.MemberInfo.GetCustomAttributes().OfType<IMetadata>();
-            return MetadataCollection.ForMetadata(metadata);
+            if (member.MemberSource is MemberInfo memberInfo)
+            {
+                var metadata = memberInfo.GetCustomAttributes().OfType<IMetadata>();
+                return MetadataCollection.ForMetadata(metadata);
+            }
+            
+            return MetadataCollection.Empty;
         }
     }
 }

@@ -12,8 +12,10 @@ namespace Valeq.Reflection
             if (type == null)
                 throw new ArgumentNullException(nameof(type));
 
-            return type
-                .GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+            return type.GetBaseTypesAndSelf()
+                .SelectMany(t => t.GetFields(BindingFlags.Instance | BindingFlags.DeclaredOnly |
+                                             BindingFlags.Public | BindingFlags.NonPublic))
+                .Where(f => f.GetCustomAttribute<UndiscoverableMemberAttribute>() == null)
                 .Select(Member.FromFieldInfo);
         }
     }

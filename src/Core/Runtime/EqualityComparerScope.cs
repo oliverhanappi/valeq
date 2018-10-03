@@ -30,6 +30,15 @@ namespace Valeq.Runtime
             Member = member;
         }
 
+        public EqualityComparerScope GetScopeForUnderlyingTypeOfNullable()
+        {
+            var underlyingType = Nullable.GetUnderlyingType(TargetType);
+            if (underlyingType == null)
+                throw new InvalidOperationException($"{this} does not target a nullable type.");
+            
+            return new EqualityComparerScope(underlyingType, Member);
+        }
+
         protected bool Equals(EqualityComparerScope other)
         {
             return TargetType == other.TargetType && Member.Equals(other.Member);
