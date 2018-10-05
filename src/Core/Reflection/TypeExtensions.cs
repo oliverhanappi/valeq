@@ -46,22 +46,25 @@ namespace Valeq.Reflection
             return false;
         }
 
-        public static IEnumerable<Type> GetBaseTypesAndSelf(this Type type)
+        public static IEnumerable<Type> GetBaseTypesAndSelf(this Type type, bool includeInterfaces = true)
         {
             if (type == null) throw new ArgumentNullException(nameof(type));
 
             yield return type;
 
-            foreach (var baseType in type.GetBaseTypes())
+            foreach (var baseType in type.GetBaseTypes(includeInterfaces))
                 yield return baseType;
         }
 
-        public static IEnumerable<Type> GetBaseTypes(this Type type)
+        public static IEnumerable<Type> GetBaseTypes(this Type type, bool includeInterfaces = true)
         {
             if (type == null) throw new ArgumentNullException(nameof(type));
 
-            foreach (var implementedInterface in type.GetInterfaces())
-                yield return implementedInterface;
+            if (includeInterfaces)
+            {
+                foreach (var implementedInterface in type.GetInterfaces())
+                    yield return implementedInterface;
+            }
 
             if (type.BaseType != null)
             {

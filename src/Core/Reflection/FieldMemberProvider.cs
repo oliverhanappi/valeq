@@ -2,17 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Valeq.Runtime;
 
 namespace Valeq.Reflection
 {
     public class FieldMemberProvider : IMemberProvider
     {
-        public IEnumerable<Member> GetMembers(Type type)
+        public IEnumerable<Member> GetMembers(EqualityComparerContext context)
         {
-            if (type == null)
-                throw new ArgumentNullException(nameof(type));
+            if (context == null)
+                throw new ArgumentNullException(nameof(context));
 
-            return type.GetBaseTypesAndSelf()
+            return context.Scope.TargetType.GetBaseTypesAndSelf()
                 .SelectMany(t => t.GetFields(BindingFlags.Instance | BindingFlags.DeclaredOnly |
                                              BindingFlags.Public | BindingFlags.NonPublic))
                 .Where(f => f.GetCustomAttribute<UndiscoverableMemberAttribute>() == null)

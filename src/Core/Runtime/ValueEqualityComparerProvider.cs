@@ -29,7 +29,7 @@ namespace Valeq.Runtime
             return _cachedEqualityComparers.GetOrAdd(scope, s =>
             {
                 var metadata = Configuration.MetadataProvider.GetTypeMetadata(s.TargetType);
-                var context = new EqualityComparerContext(s, metadata, this, Configuration);
+                var context = new EqualityComparerContext(s, metadata, Configuration);
 
                 return CreateEqualityComparer(context);
             });
@@ -49,7 +49,7 @@ namespace Valeq.Runtime
                 var typeMetadata = Configuration.MetadataProvider.GetTypeMetadata(member.MemberType);
                 var effectiveMetadata = typeMetadata.OverrideWith(memberMetadata);
 
-                var context = new EqualityComparerContext(s, effectiveMetadata, this, Configuration);
+                var context = new EqualityComparerContext(s, effectiveMetadata, Configuration);
                 return CreateEqualityComparer(context);
             });
         }
@@ -124,7 +124,7 @@ namespace Valeq.Runtime
 
         protected virtual IEqualityComparer CreateValueEqualityComparerForComplexType(EqualityComparerContext context)
         {
-            var members = Configuration.MemberProvider.GetMembers(context.Scope.TargetType).Where(IsMemberIncluded);
+            var members = Configuration.MemberProvider.GetMembers(context).Where(IsMemberIncluded);
             var memberComparisonConfigurations = members.Select(CreateMemberComparisonConfiguration);
 
             return MemberEqualityComparer.Create(context.Scope.TargetType, memberComparisonConfigurations);

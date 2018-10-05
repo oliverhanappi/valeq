@@ -62,7 +62,7 @@ namespace Valeq.Runtime
 
         public override string ToString()
         {
-            return Member.Match(m => m.ToString(), () => $"Type {TargetType.GetDisplayName()}");
+            return Member.Match(m => $"MemberScope for {m}", () => $"TypeScope for {TargetType.GetDisplayName()}");
         }
     }
 }

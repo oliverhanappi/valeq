@@ -18,16 +18,19 @@ namespace Valeq.Configuration
 
         public EqualityComparisonType DefaultEqualityComparisonType { get; }
         public StringComparisonCulture DefaultStringComparisonCulture { get; }
+        public PropertySearchScope DefaultPropertySearchScope { get; }
 
         public ValueEqualityConfiguration(
             IMemberProvider memberProvider,
             IMetadataProvider metadataProvider,
             EqualityComparisonType defaultEqualityComparisonType,
-            StringComparisonCulture defaultStringComparisonCulture)
+            StringComparisonCulture defaultStringComparisonCulture,
+            PropertySearchScope defaultPropertySearchScope)
         {
             MemberProvider = memberProvider ?? throw new ArgumentNullException(nameof(memberProvider));
             MetadataProvider = metadataProvider ?? throw new ArgumentNullException(nameof(metadataProvider));
             DefaultStringComparisonCulture = defaultStringComparisonCulture;
+            DefaultPropertySearchScope = defaultPropertySearchScope;
             DefaultEqualityComparisonType = defaultEqualityComparisonType;
         }
     }

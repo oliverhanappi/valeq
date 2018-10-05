@@ -9,11 +9,13 @@ namespace Valeq.Configuration
 
         public EqualityComparisonType DefaultEqualityComparisonType { get; set; }
         public StringComparisonCulture DefaultStringComparisonCulture { get; set; }
+        public PropertySearchScope DefaultPropertySearchScope { get; set; }
 
         public ValueEqualityConfigurationBuilder()
         {
             DefaultEqualityComparisonType = EqualityComparisonType.ValueEquality;
             DefaultStringComparisonCulture = StringComparisonCulture.None;
+            DefaultPropertySearchScope = PropertySearchScope.OnlyPublic;
             Compare = new CustomMetadataBuilder();
         }
 
@@ -25,7 +27,7 @@ namespace Valeq.Configuration
             var memberProvider = BuildMemberProvider();
 
             return new ValueEqualityConfiguration(memberProvider, metadataProvider,
-                DefaultEqualityComparisonType, DefaultStringComparisonCulture);
+                DefaultEqualityComparisonType, DefaultStringComparisonCulture, DefaultPropertySearchScope);
 
             IMetadataProvider BuildMetadataProvider()
             {

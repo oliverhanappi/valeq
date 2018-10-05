@@ -1,5 +1,10 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
+using Valeq.Configuration;
+using Valeq.Metadata;
+using Valeq.Runtime;
 
 namespace Valeq.Reflection
 {
@@ -23,9 +28,7 @@ namespace Valeq.Reflection
         [Test]
         public void Class_ReturnsAllFields()
         {
-            var members = _memberProvider.GetMembers(typeof(BaseClass))
-                .OrderBy(m => m.Name)
-                .ToList();
+            var members = GetMembers(typeof(BaseClass));
 
             Assert.That(members, Has.Count.EqualTo(2));
             Assert.That(members[0].MemberType, Is.EqualTo(typeof(string)));
@@ -35,19 +38,14 @@ namespace Valeq.Reflection
         [Test]
         public void Class_ReturnsAllFieldsOfBaseClassesAsWell()
         {
-            var members = _memberProvider.GetMembers(typeof(SubClass))
-                .OrderBy(m => m.Name)
-                .ToList();
-
+            var members = GetMembers(typeof(SubClass));
             Assert.That(members, Has.Count.EqualTo(4));
         }
 
         [Test]
         public void Class_MemberGetValue_ReturnsValue()
         {
-            var member = _memberProvider
-                .GetMembers(typeof(SubClass))
-                .Single(n => n.Name.EndsWith(nameof(SubClass.Value3)));
+            var member = GetMembers(typeof(SubClass)).Single(n => n.Name.EndsWith(nameof(SubClass.Value3)));
 
             var sub = new SubClass {Value3 = 123};
             var value = member.GetValue(sub);
@@ -58,9 +56,7 @@ namespace Valeq.Reflection
         [Test]
         public void Class_BaseClassMemberGetValue_ReturnsValue()
         {
-            var member = _memberProvider
-                .GetMembers(typeof(SubClass))
-                .Single(n => n.Name.EndsWith("_value1"));
+            var member = GetMembers(typeof(SubClass)).Single(n => n.Name.EndsWith("_value1"));
 
             var sub = new SubClass();
             var value = member.GetValue(sub);
@@ -71,7 +67,7 @@ namespace Valeq.Reflection
         [Test]
         public void Class_DoesNotReturnUndiscoverableField()
         {
-            var members = _memberProvider.GetMembers(typeof(BaseClass)).ToList();
+            var members = GetMembers(typeof(BaseClass));
 
             Assert.That(members, Has.Count.EqualTo(2));
             Assert.That(members, Has.None.Matches<Member>(m => m.Name.EndsWith(nameof(BaseClass.Secret))));
@@ -80,9 +76,7 @@ namespace Valeq.Reflection
         [Test]
         public void Struct_ReturnsAllFields()
         {
-            var members = _memberProvider.GetMembers(typeof(TestStruct))
-                .OrderBy(m => m.Name)
-                .ToList();
+            var members = GetMembers(typeof(TestStruct));
 
             Assert.That(members, Has.Count.EqualTo(2));
             Assert.That(members[0].MemberType, Is.EqualTo(typeof(string)));
@@ -92,9 +86,7 @@ namespace Valeq.Reflection
         [Test]
         public void Struct_MemberGetValue_ReturnsValue()
         {
-            var member = _memberProvider
-                .GetMembers(typeof(TestStruct))
-                .Single(n => n.Name.EndsWith(nameof(TestStruct.Value2)));
+            var member = GetMembers(typeof(TestStruct)).Single(n => n.Name.EndsWith(nameof(TestStruct.Value2)));
 
             var testStruct = new TestStruct {Value2 = 123};
             var value = member.GetValue(testStruct);
@@ -105,10 +97,19 @@ namespace Valeq.Reflection
         [Test]
         public void Struct_DoesNotReturnUndiscoverableField()
         {
-            var members = _memberProvider.GetMembers(typeof(TestStruct)).ToList();
+            var members = GetMembers(typeof(TestStruct));
 
             Assert.That(members, Has.Count.EqualTo(2));
             Assert.That(members, Has.None.Matches<Member>(m => m.Name.EndsWith(nameof(BaseClass.Secret))));
+        }
+
+        private IReadOnlyList<Member> GetMembers(Type type)
+        {
+            var scope = EqualityComparerScope.ForType(type);
+            var configuration = ValueEqualityConfiguration.CreateDefaultConfiguration();
+            var context = new EqualityComparerContext(scope, MetadataCollection.Empty, configuration);
+
+            return _memberProvider.GetMembers(context).OrderBy(m => m.Name).ToList();
         }
 
 #pragma warning disable 169, 414, 649
