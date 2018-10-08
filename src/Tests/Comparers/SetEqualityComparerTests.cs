@@ -45,8 +45,8 @@ namespace Valeq.Comparers
         [TestCaseSource(nameof(EqualsTestCases))]
         public bool Equals(string specificationX, string specificationY)
         {
-            var x = IntegerList.Parse(specificationX);
-            var y = IntegerList.Parse(specificationY);
+            var x = IntegerList.Parse(specificationX)?.ProtectAgainstMultipleEnumeration();
+            var y = IntegerList.Parse(specificationY)?.ProtectAgainstMultipleEnumeration();
 
             return _setEqualityComparer.Equals(x, y);
         }
@@ -58,8 +58,8 @@ namespace Valeq.Comparers
         [TestCaseSource(nameof(HashCodeTestCases))]
         public void GetHashCode_ReturnsSameHashCodeForEqualCollections(string specificationX, string specificationY)
         {
-            var x = IntegerList.Parse(specificationX);
-            var y = IntegerList.Parse(specificationY);
+            var x = IntegerList.Parse(specificationX)?.ProtectAgainstMultipleEnumeration();
+            var y = IntegerList.Parse(specificationY)?.ProtectAgainstMultipleEnumeration();
 
             var hashCodeX = _setEqualityComparer.GetHashCode(x);
             var hashCodeY = _setEqualityComparer.GetHashCode(y);

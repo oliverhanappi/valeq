@@ -136,6 +136,25 @@ namespace Valeq.Reflection
             Assert.That(value, Is.EqualTo(123));
         }
 
+        [TestCase(PropertySearchScope.All)]
+        [TestCase(PropertySearchScope.OnlyPublic)]
+        public void Interface_GetsAllProperties(PropertySearchScope propertySearchScope)
+        {
+            var members = GetMembers(typeof(IBaseInterface), propertySearchScope);
+
+            Assert.That(members, Has.Count.EqualTo(2));
+            Assert.That(members[0].MemberType, Is.EqualTo(typeof(int)));
+            Assert.That(members[1].MemberType, Is.EqualTo(typeof(string)));
+        }
+
+        [TestCase(PropertySearchScope.All)]
+        [TestCase(PropertySearchScope.OnlyPublic)]
+        public void Interface_Sub_GetsAlsoHiddenProperties(PropertySearchScope propertySearchScope)
+        {
+            var members = GetMembers(typeof(ISubInterface), propertySearchScope);
+            Assert.That(members, Has.Count.EqualTo(4));
+        }
+
         private IReadOnlyList<Member> GetMembers(Type type, PropertySearchScope propertySearchScope)
         {
             var scope = EqualityComparerScope.ForType(type);
@@ -172,6 +191,18 @@ namespace Valeq.Reflection
         {
             private string PrivateProperty { get; }
             public object PublicProperty { get; set; }
+        }
+        
+        private interface IBaseInterface
+        {
+            int Property1 { get; set; }
+            string Property2 { get; set; }
+        }
+
+        private interface ISubInterface : IBaseInterface
+        {
+            new bool Property2 { get; set; }
+            object Property3 { get; set; }
         }
     }
 }

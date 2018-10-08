@@ -90,6 +90,18 @@ namespace Valeq.Comparers
             Assert.That(() => new MemberEqualityComparer<object>(null), Throws.ArgumentNullException);
         }
 
+        [Test]
+        public void GetHashCode_EqualInstancesReturnSameHashcode()
+        {
+            var x = new TestPoco {Value1 = 1, Value2 = 1};
+            var y = new TestPoco {Value1 = -1, Value2 = 1};
+
+            var hashCodeX = _memberEqualityComparer.GetHashCode(x);
+            var hashCodeY = _memberEqualityComparer.GetHashCode(y);
+
+            Assert.That(hashCodeX, Is.EqualTo(hashCodeY));
+        }
+
         private class TestPoco
         {
             public int Value1 { get; set; }
