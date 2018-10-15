@@ -42,7 +42,7 @@ namespace Valeq.Configuration
 
             IMemberProvider BuildMemberProvider()
             {
-                return new CachingMemberProviderDecorator(new MetadataBasedMemberProvider(metadataProvider));
+                return new CachingMemberProviderDecorator(new DispatchingMemberProvider(metadataProvider));
             }
         }
 

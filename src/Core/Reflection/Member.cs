@@ -75,7 +75,7 @@ namespace Valeq.Reflection
 
         public override string ToString()
         {
-            return $"{Name}:{MemberType.GetDisplayName()}";
+            return $"{Name}: {MemberType.GetDisplayName()}";
         }
 
         protected bool Equals(Member other)

@@ -15,16 +15,18 @@ namespace Valeq.Reflection
             if (collectionType.GetCategory() != TypeCategory.Collection)
                 throw new ArgumentException($"{collectionType.GetDisplayName()} is not a collection.");
 
-            if (collectionType.IsAssignableToAny(typeof(IReadOnlyList<>), typeof(IList<>), typeof(IList)))
+            if (IsAssignableToAny(typeof(IReadOnlyList<>), typeof(IList<>), typeof(IList)))
                 return CollectionCategory.Sequence;
 
             if (collectionType.IsAssignableTo(typeof(ISet<>)))
                 return CollectionCategory.Set;
 
-            if (collectionType.IsAssignableToAny(typeof(IReadOnlyCollection<>), typeof(ICollection<>), typeof(ICollection)))
+            if (IsAssignableToAny(typeof(IReadOnlyCollection<>), typeof(ICollection<>), typeof(ICollection)))
                 return CollectionCategory.Bag;
 
             return CollectionCategory.Sequence;
+
+            bool IsAssignableToAny(params Type[] targetTypes) => targetTypes.Any(collectionType.IsAssignableTo);
         }
         
         public static Type GetCollectionElementType(this Type collectionType)

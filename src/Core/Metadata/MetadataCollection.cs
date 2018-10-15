@@ -10,7 +10,8 @@ namespace Valeq.Metadata
 {
     public class MetadataCollection
     {
-        public static MetadataCollection Empty => new MetadataCollection(new Dictionary<Type, IMetadata>(capacity: 0));
+        public static MetadataCollection Empty { get; } =
+            new MetadataCollection(new Dictionary<Type, IMetadata>(capacity: 0));
 
         public static MetadataCollection ForMetadata(IEnumerable<IMetadata> metadata)
         {
@@ -63,6 +64,7 @@ namespace Valeq.Metadata
 
         private readonly IReadOnlyDictionary<Type, IMetadata> _metadata;
 
+        public int Count => _metadata.Count;
         public bool IsEmpty => _metadata.Count == 0;
 
         private MetadataCollection(IReadOnlyDictionary<Type, IMetadata> metadata)

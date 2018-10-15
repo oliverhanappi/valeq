@@ -80,7 +80,7 @@ namespace Valeq.Configuration
         {
             var typeMetadata = _metadataByType.Values
                 .Distinct(new ReferenceEqualityComparer<IMetadata>())
-                .Select(m => new CustomTypeMetadata(m, typeof(TType), inherit: false)); //TODO inherit
+                .Select(m => new CustomTypeMetadata(typeof(TType), m, inherit: false)); //TODO inherit
 
             var memberMetadata = _memberMetadataBuilders.Values.SelectMany(m => m.GetCustomMetadata());
 

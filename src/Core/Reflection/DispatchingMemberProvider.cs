@@ -7,13 +7,13 @@ using Valeq.Runtime;
 
 namespace Valeq.Reflection
 {
-    public class MetadataBasedMemberProvider : IMemberProvider
+    public class DispatchingMemberProvider : IMemberProvider
     {
         private readonly IMetadataProvider _metadataProvider;
         private readonly FieldMemberProvider _fieldMemberProvider;
         private readonly PropertyMemberProvider _propertyMemberProvider;
 
-        public MetadataBasedMemberProvider(IMetadataProvider metadataProvider)
+        public DispatchingMemberProvider(IMetadataProvider metadataProvider)
         {
             _metadataProvider = metadataProvider ?? throw new ArgumentNullException(nameof(metadataProvider));
             _fieldMemberProvider = new FieldMemberProvider();
@@ -23,6 +23,9 @@ namespace Valeq.Reflection
         public IEnumerable<Member> GetMembers(EqualityComparerContext context)
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
+
+            if (context.Scope.TargetType.IsInterface)
+                return _propertyMemberProvider.GetMembers(context);
 
             var fieldMembers = _fieldMemberProvider.GetMembers(context).ToList();
             var fieldMembersWithMetadata =

@@ -154,6 +154,13 @@ namespace Valeq.Reflection
             var members = GetMembers(typeof(ISubInterface), propertySearchScope);
             Assert.That(members, Has.Count.EqualTo(4));
         }
+        
+        [Test]
+        public void GetMembers_ExcludesWriteOnlyProperties()
+        {
+            var members = GetMembers(typeof(ISetOnlyPropertyInterface), PropertySearchScope.All);
+            Assert.That(members, Is.Empty);
+        }
 
         private IReadOnlyList<Member> GetMembers(Type type, PropertySearchScope propertySearchScope)
         {
@@ -203,6 +210,11 @@ namespace Valeq.Reflection
         {
             new bool Property2 { get; set; }
             object Property3 { get; set; }
+        }
+
+        private interface ISetOnlyPropertyInterface
+        {
+            string Property { set; }
         }
     }
 }

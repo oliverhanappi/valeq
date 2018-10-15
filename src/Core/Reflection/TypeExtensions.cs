@@ -17,14 +17,6 @@ namespace Valeq.Reflection
                 .Any(c => c.GetParameters().Length == 0);
         }
 
-        public static bool IsAssignableToAny(this Type sourceType, params Type[] targetTypes)
-        {
-            if (sourceType == null) throw new ArgumentNullException(nameof(sourceType));
-            if (targetTypes == null) throw new ArgumentNullException(nameof(targetTypes));
-
-            return targetTypes.Any(sourceType.IsAssignableTo);
-        }
-
         public static bool IsAssignableTo(this Type sourceType, Type targetType)
         {
             if (sourceType == null) throw new ArgumentNullException(nameof(sourceType));
@@ -33,7 +25,7 @@ namespace Valeq.Reflection
             if (targetType.IsAssignableFrom(sourceType))
                 return true;
 
-            foreach (var baseType in sourceType.GetBaseTypesAndSelf())
+            foreach (var baseType in sourceType.GetBaseTypes())
             {
                 if (targetType.IsAssignableFrom(baseType))
                     return true;
@@ -46,32 +38,22 @@ namespace Valeq.Reflection
             return false;
         }
 
-        public static IEnumerable<Type> GetBaseTypesAndSelf(this Type type, bool includeInterfaces = true)
+        public static IEnumerable<Type> GetBaseTypes(this Type type, bool includeSelf = true, bool includeInterfaces = true)
         {
             if (type == null) throw new ArgumentNullException(nameof(type));
 
-            yield return type;
-
-            foreach (var baseType in type.GetBaseTypes(includeInterfaces))
-                yield return baseType;
-        }
-
-        public static IEnumerable<Type> GetBaseTypes(this Type type, bool includeInterfaces = true)
-        {
-            if (type == null) throw new ArgumentNullException(nameof(type));
-
+            if (includeSelf)
+                yield return type;
+            
+            for (var currentType = type.BaseType; currentType != null; currentType = currentType.BaseType)
+            {
+                yield return currentType;
+            }
+            
             if (includeInterfaces)
             {
                 foreach (var implementedInterface in type.GetInterfaces())
                     yield return implementedInterface;
-            }
-
-            if (type.BaseType != null)
-            {
-                yield return type.BaseType;
-
-                foreach (var baseType in type.BaseType.GetBaseTypes())
-                    yield return baseType;
             }
         }
 
@@ -89,7 +71,7 @@ namespace Valeq.Reflection
 
             var results = new List<Type>();
 
-            foreach (var baseType in genericType.GetBaseTypesAndSelf())
+            foreach (var baseType in genericType.GetBaseTypes())
             {
                 if (baseType.IsGenericType && baseType.GetGenericTypeDefinition() == genericTypeDefinition)
                     results.Add(baseType);

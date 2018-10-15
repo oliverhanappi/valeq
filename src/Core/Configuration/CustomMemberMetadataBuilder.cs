@@ -55,7 +55,7 @@ namespace Valeq.Configuration
         {
             return _metadataByType.Values
                 .Distinct(new ReferenceEqualityComparer<IMetadata>())
-                .Select(m => new CustomMemberMetadata(m, _member));
+                .Select(m => new CustomMemberMetadata(_member, m));
         }
     }
 }

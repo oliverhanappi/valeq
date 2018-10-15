@@ -18,8 +18,9 @@ namespace Valeq.Reflection
             var propertySearchScope = context.Metadata.TryGetMetadata<IPropertySearchScopeMetadata>()
                 .Match(m => m.GetPropertySearchScope(context), () => context.Configuration.DefaultPropertySearchScope);
 
-            return context.Scope.TargetType.GetBaseTypesAndSelf(includeInterfaces: context.Scope.TargetType.IsInterface)
+            return context.Scope.TargetType.GetBaseTypes(includeInterfaces: context.Scope.TargetType.IsInterface)
                 .SelectMany(t => t.GetProperties(GetBindingFlags()))
+                .Where(p => p.CanRead)
                 .GroupBy(p => p.GetRootPropertyInfo())
                 .Select(g => g.OrderByDescending(p => p.DeclaringType, new TypeComparator()).First())
                 .Where(p => p.GetCustomAttribute<UndiscoverableMemberAttribute>() == null)

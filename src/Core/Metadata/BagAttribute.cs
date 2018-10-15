@@ -1,15 +1,12 @@
-using System;
 using Valeq.Reflection;
-using Valeq.Runtime;
 
 namespace Valeq.Metadata
 {
-    [AttributeUsage(ValeqAttributeTargets.TypeOrMember)]
-    public class BagAttribute : Attribute, ICollectionCategoryMetadata
+    public class BagAttribute : CollectionCategoryAttribute
     {
-        public CollectionCategory GetCollectionCategory(EqualityComparerContext context)
+        public BagAttribute()
+            : base(CollectionCategory.Bag)
         {
-            return CollectionCategory.Bag;
         }
     }
 }

@@ -13,13 +13,13 @@ namespace Valeq.Reflection
             if (type == null)
                 throw new ArgumentNullException(nameof(type));
 
-            if (memberInfo.DeclaringType == type)
+            if (memberInfo is PropertyInfo propertyInfo)
+                memberInfo = propertyInfo.GetRootPropertyInfo();
+
+            if (memberInfo.DeclaringType != null && memberInfo.DeclaringType.IsAssignableFrom(type))
                 return true;
 
-            if (type.BaseType == null)
-                return false;
-
-            return memberInfo.IsPartOf(type.BaseType);
+            return false;
         }
     }
 }

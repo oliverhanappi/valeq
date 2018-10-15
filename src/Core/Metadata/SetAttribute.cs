@@ -1,15 +1,12 @@
-using System;
 using Valeq.Reflection;
-using Valeq.Runtime;
 
 namespace Valeq.Metadata
 {
-    [AttributeUsage(ValeqAttributeTargets.TypeOrMember)]
-    public class SetAttribute : Attribute, ICollectionCategoryMetadata
+    public class SetAttribute : CollectionCategoryAttribute
     {
-        public CollectionCategory GetCollectionCategory(EqualityComparerContext context)
+        public SetAttribute()
+            : base(CollectionCategory.Set)
         {
-            return CollectionCategory.Set;
         }
     }
 }

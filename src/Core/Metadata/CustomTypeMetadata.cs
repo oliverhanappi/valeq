@@ -8,7 +8,7 @@ namespace Valeq.Metadata
         public Type Type { get; }
         public bool Inherit { get; }
 
-        public CustomTypeMetadata(IMetadata metadata, Type type, bool inherit) : base(metadata)
+        public CustomTypeMetadata(Type type, IMetadata metadata, bool inherit) : base(metadata)
         {
             Type = type ?? throw new ArgumentNullException(nameof(type));
             Inherit = inherit;

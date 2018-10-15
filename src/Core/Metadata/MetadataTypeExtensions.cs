@@ -17,7 +17,7 @@ namespace Valeq.Metadata
         public static IEnumerable<Type> GetMetadataTypes(this IMetadata metadata)
         {
             if (metadata == null) throw new ArgumentNullException(nameof(metadata));
-            return metadata.GetType().GetBaseTypesAndSelf().Where(t => t.IsMetadataType());
+            return metadata.GetType().GetBaseTypes().Where(t => t.IsMetadataType()).Distinct();
         }
     }
 }

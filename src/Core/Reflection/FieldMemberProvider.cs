@@ -13,7 +13,7 @@ namespace Valeq.Reflection
             if (context == null)
                 throw new ArgumentNullException(nameof(context));
 
-            return context.Scope.TargetType.GetBaseTypesAndSelf()
+            return context.Scope.TargetType.GetBaseTypes()
                 .SelectMany(t => t.GetFields(BindingFlags.Instance | BindingFlags.DeclaredOnly |
                                              BindingFlags.Public | BindingFlags.NonPublic))
                 .Where(f => f.GetCustomAttribute<UndiscoverableMemberAttribute>() == null)

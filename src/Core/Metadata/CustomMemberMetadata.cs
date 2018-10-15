@@ -7,7 +7,7 @@ namespace Valeq.Metadata
     {
         public Member Member { get; }
 
-        public CustomMemberMetadata(IMetadata metadata, Member member) : base(metadata)
+        public CustomMemberMetadata(Member member, IMetadata metadata) : base(metadata)
         {
             Member = member ?? throw new ArgumentNullException(nameof(member));
         }

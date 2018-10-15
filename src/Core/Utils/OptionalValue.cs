@@ -12,16 +12,22 @@ namespace Valeq.Utils
         public static implicit operator OptionalValue<T>(T value) => new OptionalValue<T>(value);
         public static readonly OptionalValue<T> None = default(OptionalValue<T>);
 
-        private readonly bool _hasValue;
+        public bool HasValue { get; }
+
         private readonly T _value;
 
         public OptionalValue(T value)
         {
             if (ReferenceEquals(value, null))
-                throw new ArgumentNullException(nameof(value));
-
-            _value = value;
-            _hasValue = true;
+            {
+                _value = default(T);
+                HasValue = false;
+            }
+            else
+            {
+                _value = value;
+                HasValue = true;
+            }
         }
 
         public TResult Match<TResult>(Func<T, TResult> mapper, Func<TResult> fallback)
@@ -29,16 +35,16 @@ namespace Valeq.Utils
             if (mapper == null) throw new ArgumentNullException(nameof(mapper));
             if (fallback == null) throw new ArgumentNullException(nameof(fallback));
 
-            var result = _hasValue ? mapper(_value) : fallback();
+            var result = HasValue ? mapper.Invoke(_value) : fallback.Invoke();
             if (ReferenceEquals(result, null))
                 throw new InvalidOperationException($"Match operation has produced null for {this}.");
 
             return result;
         }
-
+        
         public bool Equals(OptionalValue<T> other)
         {
-            return EqualityComparer<T>.Default.Equals(_value, other._value);
+            return HasValue == other.HasValue && EqualityComparer<T>.Default.Equals(_value, other._value);
         }
 
         public override bool Equals(object obj)
@@ -49,12 +55,15 @@ namespace Valeq.Utils
 
         public override int GetHashCode()
         {
-            return EqualityComparer<T>.Default.GetHashCode(_value);
+            unchecked
+            {
+                return (HasValue.GetHashCode() * 397) ^ EqualityComparer<T>.Default.GetHashCode(_value);
+            }
         }
 
         public override string ToString()
         {
-            return _hasValue
+            return HasValue
                 ? $"Some({_value}) of {typeof(T).GetDisplayName()}"
                 : $"None of {typeof(T).GetDisplayName()}";
         }
