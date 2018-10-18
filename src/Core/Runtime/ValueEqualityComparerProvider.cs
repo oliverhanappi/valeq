@@ -67,8 +67,8 @@ namespace Valeq.Runtime
 
             IEqualityComparer Create()
             {
-                var equalityComparisonType = context.Metadata.TryGetMetadata<IEqualityComparisonTypeMetadata>()
-                    .Match(m => m.EqualityComparisonType, () => Configuration.DefaultEqualityComparisonType);
+                var equalityComparisonType = context.Metadata.TryGetMetadata<IEqualityComparisonTypeMetadata>().Match(
+                    m => m.GetEqualityComparisonType(context), () => Configuration.DefaultEqualityComparisonType);
 
                 switch (equalityComparisonType)
                 {

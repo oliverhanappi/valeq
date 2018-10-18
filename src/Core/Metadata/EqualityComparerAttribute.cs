@@ -18,19 +18,13 @@ namespace Valeq.Metadata
             if (!typeof(IEqualityComparer).IsAssignableFrom(equalityComparerType))
                 throw new ArgumentException($"{equalityComparerType.GetDisplayName()} is not an equality comparer.");
 
-            if (!equalityComparerType.HasParameterLessConstructor())
-            {
-                var message = $"{equalityComparerType.GetDisplayName()} has no parameterless constructor.";
-                throw new ArgumentException(message, nameof(equalityComparerType));
-            }
-
             EqualityComparerType = equalityComparerType;
         }
 
         public IEqualityComparer GetEqualityComparer(EqualityComparerContext context)
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
-            return (IEqualityComparer) Activator.CreateInstance(EqualityComparerType);
+            return (IEqualityComparer) context.Configuration.Activator.CreateInstance(EqualityComparerType, context);
         }
     }
 }

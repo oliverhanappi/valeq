@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using Valeq.Configuration;
+using Valeq.TestDataBuilders;
 
 namespace Valeq.Metadata
 {
@@ -7,9 +8,10 @@ namespace Valeq.Metadata
     public class DefaultEqualityAttributeTests
     {
         [Test]
-        public void EqualityComparisonType_ReturnsDefaultEquality()
+        public void GetEqualityComparisonType_ReturnsDefaultEquality()
         {
-            var equalityComparisonType = new DefaultEqualityAttribute().EqualityComparisonType;
+            var equalityComparisonType =
+                new DefaultEqualityAttribute().GetEqualityComparisonType(Create.An.EqualityComparerContext());
             Assert.That(equalityComparisonType, Is.EqualTo(EqualityComparisonType.DefaultEquality));
         }
     }

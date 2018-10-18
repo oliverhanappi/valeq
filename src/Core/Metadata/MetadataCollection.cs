@@ -13,6 +13,9 @@ namespace Valeq.Metadata
         public static MetadataCollection Empty { get; } =
             new MetadataCollection(new Dictionary<Type, IMetadata>(capacity: 0));
 
+        public static MetadataCollection ForMetadata(params IMetadata[] metadata)
+            => ForMetadata(metadata.AsEnumerable());
+
         public static MetadataCollection ForMetadata(IEnumerable<IMetadata> metadata)
         {
             if (metadata == null) throw new ArgumentNullException(nameof(metadata));

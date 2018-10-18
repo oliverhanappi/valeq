@@ -1,5 +1,6 @@
 using System;
 using Valeq.Configuration;
+using Valeq.Runtime;
 
 namespace Valeq.Metadata
 {
@@ -10,6 +11,9 @@ namespace Valeq.Metadata
     [AttributeUsage(ValeqAttributeTargets.TypeOrMember)]
     public class ValueEqualityAttribute : Attribute, IEqualityComparisonTypeMetadata
     {
-        public EqualityComparisonType EqualityComparisonType => EqualityComparisonType.ValueEquality;
+        public EqualityComparisonType GetEqualityComparisonType(EqualityComparerContext context)
+        {
+            return EqualityComparisonType.ValueEquality;
+        }
     }
 }

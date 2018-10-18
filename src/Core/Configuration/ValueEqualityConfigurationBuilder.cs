@@ -11,6 +11,8 @@ namespace Valeq.Configuration
         public StringComparisonCulture DefaultStringComparisonCulture { get; set; }
         public PropertySearchScope DefaultPropertySearchScope { get; set; }
 
+        public IActivator Activator { get; set; }
+
         public ValueEqualityConfigurationBuilder()
         {
             DefaultEqualityComparisonType = EqualityComparisonType.ValueEquality;
@@ -25,8 +27,9 @@ namespace Valeq.Configuration
 
             var metadataProvider = BuildMetadataProvider();
             var memberProvider = BuildMemberProvider();
+            var activator = Activator ?? new DefaultActivator();
 
-            return new ValueEqualityConfiguration(memberProvider, metadataProvider,
+            return new ValueEqualityConfiguration(memberProvider, metadataProvider, activator,
                 DefaultEqualityComparisonType, DefaultStringComparisonCulture, DefaultPropertySearchScope);
 
             IMetadataProvider BuildMetadataProvider()

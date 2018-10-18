@@ -6,6 +6,7 @@ using Valeq.Runtime;
 
 namespace Valeq.Metadata
 {
+    [AttributeUsage(ValeqAttributeTargets.Member)]
     public class IgnoreCaseInComparisonAttribute : Attribute, IEqualityComparerMetadata
     {
         public IEqualityComparer GetEqualityComparer(EqualityComparerContext context)
