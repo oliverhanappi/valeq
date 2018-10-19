@@ -32,6 +32,8 @@ namespace Valeq.Reflection
             Assert.That(() => ExpressionUtility.GetPropertyInfo((TestClass c) => c.Field), Throws.ArgumentException);
         }
 
+#pragma warning disable 649        
+
         private class TestClass
         {
             public string Field;

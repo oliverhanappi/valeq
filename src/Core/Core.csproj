@@ -5,5 +5,18 @@
         <AssemblyName>Valeq</AssemblyName>
         <RootNamespace>Valeq</RootNamespace>
     </PropertyGroup>
+
+    <!-- Signing -->
+    <PropertyGroup>
+        <SignAssembly>true</SignAssembly>
+        <AssemblyOriginatorKeyFile>$(SolutionDir)tools/signing/key.snk</AssemblyOriginatorKeyFile>
+    </PropertyGroup>
+    
+    <!-- NuGet Properties -->
+    <PropertyGroup>
+        <Authors>Oliver Hanappi</Authors>
+        <Description>Zero configuration yet highly flexible value equality for .NET POCOs.</Description>
+        <PackageProjectUrl>https://github.com/oliverhanappi/valeq</PackageProjectUrl>
+    </PropertyGroup>
     
 </Project>

@@ -80,6 +80,8 @@ namespace Valeq.Reflection
             return propertyInfo.IsPartOf(type);
         }
         
+#pragma warning disable 649        
+
         private class BaseClass
         {
             public string Property { get; set; }

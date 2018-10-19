@@ -127,6 +127,8 @@ namespace Valeq.Metadata
             Assert.That(metadata.HasMetadata<IEqualityComparisonTypeMetadata>());
         }
 
+#pragma warning disable 649        
+        
         [DefaultEquality]
         private class BaseClass
         {
