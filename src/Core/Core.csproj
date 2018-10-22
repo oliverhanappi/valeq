@@ -9,7 +9,7 @@
     <!-- Signing -->
     <PropertyGroup>
         <SignAssembly>true</SignAssembly>
-        <AssemblyOriginatorKeyFile>$(SolutionDir)tools/signing/key.snk</AssemblyOriginatorKeyFile>
+        <AssemblyOriginatorKeyFile>$(ProjectDir)../../tools/signing/key.snk</AssemblyOriginatorKeyFile>
     </PropertyGroup>
     
     <!-- NuGet Properties -->
